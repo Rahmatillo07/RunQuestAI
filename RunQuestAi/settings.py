@@ -10,9 +10,9 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-62j@%%w-eh&ut%f(h69iojka2^l=we6a_a1a$%+k63_ci_$*@0'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-62j@%%w-eh&ut%f(h69iojka2^l=we6a_a1a$%+k63_ci_$*@0')
 
-DEBUG = False
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
 
@@ -118,18 +118,23 @@ USE_I18N = True
 USE_TZ = True
 
 # ========================
-# STATIC FILES
+# STATIC & MEDIA FILES
 # ========================
-
-
 CSRF_TRUSTED_ORIGINS = ['https://runquest-api.onrender.com']
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# WhiteNoise konfiguratsiyasi (production uchun)
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# ========================
+# CUSTOM USER MODEL
+# ========================
 AUTH_USER_MODEL = 'app.User'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -169,8 +174,6 @@ REST_FRAMEWORK = {
 # ========================
 # SIMPLE JWT SETTINGS
 # ========================
-REST_USE_JWT = True
-
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),

@@ -13,4 +13,9 @@ services:
         value: RunQuestAi.settings
       - key: PYTHON_VERSION
         value: 3.11
-    staticPublishPath: staticfiles
+      - key: SECRET_KEY
+        sync: false
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com,127.0.0.1,localhost"
