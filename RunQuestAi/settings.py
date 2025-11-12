@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-62j@%%w-eh&ut%f(h69iojka2^l=we6a_a1a$%+k63_ci_$*@0
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['runquest-api.onrender.com', '127.0.0.1']
+ALLOWED_HOSTS = ['.onrender.com','localhost', '127.0.0.1']
 
 # ========================
 # INSTALLED_APPS
