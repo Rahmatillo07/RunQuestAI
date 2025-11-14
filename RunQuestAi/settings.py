@@ -2,19 +2,20 @@
 Django settings for RunQuestAi project.
 """
 import os
-from dotenv import load_dotenv
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-62j@%%w-eh&ut%f(h69iojka2^l=we6a_a1a$%+k63_ci_$*@0')
+SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://runquestai.onrender.com']
 
 # ========================
 # INSTALLED_APPS
@@ -47,12 +48,9 @@ INSTALLED_APPS = [
     'drf_yasg',
 ]
 
-# ========================
-# MIDDLEWARE
-# ========================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # static uchun
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -67,7 +65,7 @@ ROOT_URLCONF = 'RunQuestAi.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # agar kerak bo'lsa
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -101,55 +99,43 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# ========================
-# AUTH BACKENDS
-# ========================
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-# ========================
-# INTERNATIONALIZATION
-# ========================
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
 # ========================
-# STATIC & MEDIA FILES
+# STATIC & MEDIA
 # ========================
-CSRF_TRUSTED_ORIGINS = ['https://runquest-api.onrender.com']
-
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = []  # optional
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
-# WhiteNoise konfiguratsiyasi (production uchun)
-if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ========================
-# CUSTOM USER MODEL
+# CUSTOM USER
 # ========================
 AUTH_USER_MODEL = 'app.User'
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ========================
-# SITE & ACCOUNT SETTINGS
+# ACCOUNT SETTINGS
 # ========================
 SITE_ID = 1
-
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_LOGOUT_ON_GET = True
-
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
@@ -157,7 +143,6 @@ LOGOUT_REDIRECT_URL = '/'
 # REST FRAMEWORK SETTINGS
 # ========================
 REST_USE_JWT = True
-
 JWT_AUTH_COOKIE = 'access_token'
 JWT_AUTH_REFRESH_COOKIE = 'refresh_token'
 
@@ -171,9 +156,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-# ========================
-# SIMPLE JWT SETTINGS
-# ========================
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
@@ -183,9 +165,6 @@ SIMPLE_JWT = {
     "SIGNING_KEY": SECRET_KEY,
 }
 
-# ========================
-# SOCIAL PROVIDERS
-# ========================
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {

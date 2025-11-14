@@ -18,7 +18,10 @@ class RunViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Run.objects.filter(user=self.request.user).order_by('-date')
+        user = self.request.user
+        if not user.is_authenticated:
+            return Run.objects.none()
+        return Run.objects.filter(user=user).order_by('-date')
 
     def create(self, request, *args, **kwargs):
         user = request.user
@@ -87,6 +90,12 @@ class RunLocationViewSet(viewsets.ModelViewSet):
     serializer_class = RunLocationSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return RunLocation.objects.none()
+        return RunLocation.objects.filter(run__user=user)
+
     def create(self, request, *args, **kwargs):
         run_id = request.data.get('run')
         lat = request.data.get('lat')
@@ -110,11 +119,25 @@ class TerritoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TerritorySerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Territory.objects.none()
+        return Territory.objects.all()
+
 
 class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
+    queryset = User.objects.none()
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            "message": "Foydalanuvchi muvaffaqiyatli ro'yxatdan o'tdi!",
+            "username": user.username
+        }, status=status.HTTP_201_CREATED)
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
@@ -122,5 +145,7 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        return self.request.user
-
+        user = self.request.user
+        if user.is_anonymous:
+            return None
+        return user

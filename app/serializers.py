@@ -48,13 +48,13 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'password','weight','height']
+        fields = ['username', 'password', 'weight', 'height']
 
     def create(self, validated_data):
         user = User.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
-            weight = validated_data['weight'],
-            height = validated_data['height'],
+            weight=validated_data['weight'],
+            height=validated_data['height'],
         )
         return user

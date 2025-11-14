@@ -20,7 +20,7 @@ class Territory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.owner.name
+        return self.owner.username
 
 
 class Run(models.Model):

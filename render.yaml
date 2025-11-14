@@ -5,8 +5,8 @@ services:
     plan: free
     buildCommand: |
       pip install -r requirements.txt
-      python manage.py collectstatic --noinput
       python manage.py migrate
+      python manage.py collectstatic --noinput
     startCommand: gunicorn RunQuestAi.wsgi:application
     envVars:
       - key: DJANGO_SETTINGS_MODULE
@@ -17,5 +17,3 @@ services:
         sync: false
       - key: DEBUG
         value: False
-      - key: ALLOWED_HOSTS
-        value: ".onrender.com,127.0.0.1,localhost"
