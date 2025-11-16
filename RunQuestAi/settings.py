@@ -46,11 +46,14 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
 
     'drf_yasg',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # static uchun
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -108,6 +111,16 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
+
+# ==================
+# CORS
+# ==================
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "https://runquest.onrender.com",
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 # ========================
 # STATIC & MEDIA
