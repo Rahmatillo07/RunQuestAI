@@ -81,4 +81,5 @@ class RunLocation(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.run.user} | {self.lat}, {self.lon}"
+        user = self.run.user.username if self.run.user and self.run.user.is_authenticated else "unknown"
+        return f"{user} | {self.lat}, {self.lon}"

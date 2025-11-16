@@ -3,6 +3,8 @@ from datetime import date
 from rest_framework import serializers
 from .models import User, Territory, Run, RunLocation
 
+from dj_rest_auth.registration.serializers import RegisterSerializer as DefaultRegisterSerializer
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,6 +51,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'password', 'weight', 'height']
+        ref_name = 'AppRegisterSerializer'
 
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -58,3 +61,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             height=validated_data['height'],
         )
         return user
+
+
+class AuthRegisterSerializer(DefaultRegisterSerializer):
+    class Meta(DefaultRegisterSerializer):
+        class Meta:
+            ref_name = "AuthRegisterSerializer"
